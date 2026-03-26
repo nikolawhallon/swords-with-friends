@@ -4,7 +4,21 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hj2bp"]
 bg_color = Color(0.49411765, 0.14509805, 0.3254902, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
 border_color = Color(0.7607843, 0.7647059, 0.78039217, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7d7hy"]
+bg_color = Color(0.49411765, 0.14509805, 0.3254902, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7607843, 0.7647059, 0.78039217, 1)
+anti_aliasing = false
 
 [node name="QuickTextInput" type="LineEdit" unique_id=909781367]
 anchors_preset = 8
@@ -12,10 +26,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -240.0
-offset_top = -16.0
-offset_right = 240.0
-offset_bottom = 16.0
+offset_left = -120.0
+offset_top = -8.0
+offset_right = 120.0
+offset_bottom = 8.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.7607843, 0.7647059, 0.78039217, 1)
@@ -23,7 +37,9 @@ theme_override_colors/font_placeholder_color = Color(0.5137255, 0.4627451, 0.611
 theme_override_colors/caret_color = Color(0.7607843, 0.7647059, 0.78039217, 1)
 theme_override_constants/caret_width = 2
 theme_override_fonts/font = ExtResource("1_hj2bp")
+theme_override_font_sizes/font_size = 8
 theme_override_styles/normal = SubResource("StyleBoxFlat_hj2bp")
+theme_override_styles/focus = SubResource("StyleBoxFlat_7d7hy")
 alignment = 1
 keep_editing_on_text_submit = true
 caret_blink = true

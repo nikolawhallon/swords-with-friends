@@ -1,0 +1,9 @@
+[gd_resource type="LabelSettings" format=3 uid="uid://bw7f23l3xceoc"]
+
+[ext_resource type="FontFile" uid="uid://c0t3svin2bvld" path="res://assets/kongtext.ttf" id="1_47bnd"]
+
+[resource]
+font = ExtResource("1_47bnd")
+font_size = 8
+font_color = Color(1, 0.46666667, 0.65882355, 1)
+outline_color = Color(1, 0.94509804, 0.9098039, 1)

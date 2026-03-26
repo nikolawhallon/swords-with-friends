@@ -21,8 +21,8 @@ var quick_text_input = null
 
 func get_arena_for_peer(peer_id):
 	for match_id in matches:
-		for proto_team in matches[match_id]["proto_teams"]:
-			if proto_team["peer_id"] == peer_id:
+		for peer in matches[match_id]["peers"]:
+			if peer["peer_id"] == peer_id:
 				return get_arena_by_match_id(match_id)
 	return null
 
@@ -37,8 +37,8 @@ func get_peer_ids_for_match(match_id):
 	if !matches.has(match_id):
 		return peer_ids
 
-	for proto_team in matches[match_id]["proto_teams"]:
-		peer_ids.append(proto_team["peer_id"])
+	for peer in matches[match_id]["peers"]:
+		peer_ids.append(peer["peer_id"])
 
 	return peer_ids
 
@@ -104,7 +104,7 @@ func _process(_delta: float) -> void:
 			state = State.DEFAULT
 
 	if state == State.DEFAULT and Input.is_action_just_pressed("solo"):
-		var proto_teams = [
+		var peers = [
 			{"peer_id": 1, "ready": false}
 		]
 
@@ -113,7 +113,7 @@ func _process(_delta: float) -> void:
 
 		matches[match_id] = {
 			"state": "pending",
-			"proto_teams": proto_teams,
+			"peers": peers,
 			"seed": random_seed,
 		}
 
@@ -238,9 +238,9 @@ func queue_game():
 
 func try_match_making():
 	while waiting_peer_ids.size() >= MAX_TEAMS:
-		var proto_teams = []
+		var peers = []
 		for i in MAX_TEAMS:
-			proto_teams.append({
+			peers.append({
 				"peer_id": waiting_peer_ids.pop_front(),
 				"ready": false,
 			})
@@ -253,7 +253,7 @@ func try_match_making():
 
 		matches[match_id] = {
 			"state": "pending",
-			"proto_teams": proto_teams,
+			"peers": peers,
 			"seed": random_seed,
 		}
 
@@ -262,9 +262,9 @@ func try_match_making():
 
 		# Collect unique peer_ids to avoid duplicate RPCs
 		var peer_ids = []
-		for proto_team in proto_teams:
-			if not peer_ids.has(proto_team["peer_id"]):
-				peer_ids.append(proto_team["peer_id"])
+		for peer in peers:
+			if not peer_ids.has(peer["peer_id"]):
+				peer_ids.append(peer["peer_id"])
 
 		for id in peer_ids:
 			announce_boot_arena.rpc_id(id, match_id)
@@ -299,15 +299,15 @@ func mark_match_ready_for_peer(peer_id, match_id):
 		print("WARN - matches does not have this match_id: ", match_id)
 		return
 
-	var proto_teams = matches[match_id]["proto_teams"]
+	var peers = matches[match_id]["peers"]
 
-	for proto_team in proto_teams:
-		if proto_team["peer_id"] == peer_id:
-			proto_team["ready"] = true
+	for peer in peers:
+		if peer["peer_id"] == peer_id:
+			peer["ready"] = true
 			break
 
-	for proto_team in proto_teams:
-		if not proto_team["ready"]:
+	for peer in peers:
+		if not peer["ready"]:
 			return
 
 	var random_seed = matches[match_id]["seed"]
@@ -317,15 +317,15 @@ func mark_match_ready_for_peer(peer_id, match_id):
 
 	# Collect unique peer_ids to avoid duplicate RPCs
 	var peer_ids = []
-	for proto_team in proto_teams:
-		if not peer_ids.has(proto_team["peer_id"]):
-			peer_ids.append(proto_team["peer_id"])
+	for peer in peers:
+		if not peer_ids.has(peer["peer_id"]):
+			peer_ids.append(peer["peer_id"])
 
 	if DisplayServer.get_name() == "headless":
-		arena.announce_start_game.rpc_id(1, random_seed, proto_teams)
+		arena.announce_start_game.rpc_id(1, random_seed, peers)
 
 	for id in peer_ids:
-		arena.announce_start_game.rpc_id(id, random_seed, proto_teams)
+		arena.announce_start_game.rpc_id(id, random_seed, peers)
 
 func _on_arena_leave_requested(arena):
 	if multiplayer.is_server():

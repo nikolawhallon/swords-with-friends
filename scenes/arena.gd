@@ -22,5 +22,5 @@ func _process(_delta: float) -> void:
 		emit_signal("leave_requested")
 
 @rpc("call_local", "reliable")
-func announce_start_game(_random_seed, _proto_teams):
+func announce_start_game(_random_seed, _peers):
 	state = State.STARTING

@@ -83,7 +83,7 @@ func _process(_delta: float) -> void:
 		quick_text_input = load("res://scenes/quick_text_input.tscn").instantiate()
 		quick_text_input.set_placeholder("PORT")
 		quick_text_input.text_submitted.connect(_on_host_text_submitted)
-		$LobbyUI.add_child(quick_text_input)
+		$LobbyUI.add_child(quick_text_input, true)
 		quick_text_input.grab_focus()
 
 	if state == State.DEFAULT and Input.is_action_just_pressed("connect"):
@@ -91,7 +91,7 @@ func _process(_delta: float) -> void:
 		quick_text_input = load("res://scenes/quick_text_input.tscn").instantiate()
 		quick_text_input.set_placeholder("IP:PORT")
 		quick_text_input.text_submitted.connect(_on_connect_text_submitted)
-		$LobbyUI.add_child(quick_text_input)
+		$LobbyUI.add_child(quick_text_input, true)
 		quick_text_input.grab_focus()
 
 	if state == State.DEFAULT and Input.is_action_just_pressed("queue"):
@@ -104,6 +104,8 @@ func _process(_delta: float) -> void:
 			state = State.DEFAULT
 
 	if state == State.DEFAULT and Input.is_action_just_pressed("solo"):
+		state = State.PLAYING
+
 		var peers = [
 			{"peer_id": 1, "ready": false}
 		]

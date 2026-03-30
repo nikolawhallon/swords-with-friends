@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://nrc03kjriwb7"]
+
+[ext_resource type="Texture2D" uid="uid://dgwemui1rsx5o" path="res://assets/knight/knight-idle-1.png" id="1_0dyjn"]
+[ext_resource type="Script" uid="uid://bn45nuw308gry" path="res://scenes/knight.gd" id="1_5fsgc"]
+[ext_resource type="Texture2D" uid="uid://b5pplpf63ns2u" path="res://assets/knight/knight-idle-2.png" id="2_5fsgc"]
+[ext_resource type="Texture2D" uid="uid://bnwxe38ecmilq" path="res://assets/knight/knight-move-1.png" id="3_swm0g"]
+[ext_resource type="Texture2D" uid="uid://bcyfapbqex538" path="res://assets/knight/knight-move-2.png" id="4_k2txo"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mvyd6"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_0dyjn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_5fsgc")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_swm0g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_k2txo")
+}],
+"loop": true,
+"name": &"move",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_14u3r"]
+size = Vector2(7, 7)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_5fsgc"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:peer_id")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:device_id")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:direction")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+
+[node name="Knight" type="CharacterBody2D" unique_id=892979916 groups=["Knight"]]
+script = ExtResource("1_5fsgc")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=240989202]
+sprite_frames = SubResource("SpriteFrames_mvyd6")
+animation = &"move"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=357245551]
+shape = SubResource("RectangleShape2D_14u3r")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=149977796]
+replication_config = SubResource("SceneReplicationConfig_5fsgc")

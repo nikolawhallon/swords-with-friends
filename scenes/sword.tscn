@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://c223k7rtmfno5"]
+
+[ext_resource type="Texture2D" uid="uid://chu41sdkj1yla" path="res://assets/sword-horizontal.png" id="1_n355p"]
+[ext_resource type="Texture2D" uid="uid://s41p5coui75o" path="res://assets/sword-vertical.png" id="2_s4ec8"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_k5whp"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_n355p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_s4ec8")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1yp6w"]
+size = Vector2(8, 8)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_n355p"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("AnimatedSprite2D:frame")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("AnimatedSprite2D:flip_h")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath("AnimatedSprite2D:flip_v")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+
+[node name="Sword" type="Area2D" unique_id=57290248 groups=["Sword"]]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=696675509]
+sprite_frames = SubResource("SpriteFrames_k5whp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2115119771]
+shape = SubResource("RectangleShape2D_1yp6w")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1354226824]
+replication_config = SubResource("SceneReplicationConfig_n355p")

@@ -1,6 +1,17 @@
 [gd_scene format=3 uid="uid://du1pfojcb8eg8"]
 
 [ext_resource type="Script" uid="uid://dn0a8nh72gupb" path="res://scenes/arena.gd" id="1_e05a3"]
+[ext_resource type="PackedScene" uid="uid://jt7vpdmpbw48" path="res://scenes/map.tscn" id="2_wl4x5"]
 
-[node name="Arena" type="Node2D" unique_id=1945760612]
+[node name="Arena" type="Node2D" unique_id=1945760612 groups=["Arena"]]
 script = ExtResource("1_e05a3")
+
+[node name="Map" parent="." unique_id=777111145 instance=ExtResource("2_wl4x5")]
+
+[node name="Replicated" type="Node" parent="." unique_id=217975276]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=1350542115]
+_spawnable_scenes = PackedStringArray("uid://nrc03kjriwb7", "uid://c223k7rtmfno5")
+spawn_path = NodePath("../Replicated")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1835027083]

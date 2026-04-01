@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://b6y2yasupn3v8"]
+
+[ext_resource type="Texture2D" uid="uid://d24y1chgjmhfc" path="res://assets/ghost/ghost-1.png" id="1_bbnym"]
+[ext_resource type="Script" uid="uid://cnd84jud5iie3" path="res://scenes/ghost.gd" id="1_veat2"]
+[ext_resource type="Texture2D" uid="uid://bpc1bx3u77vlj" path="res://assets/ghost/ghost-2.png" id="2_veat2"]
+[ext_resource type="Texture2D" uid="uid://c8br0rbtd6wjq" path="res://assets/ghost/ghost-3.png" id="3_5mfnq"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lv6vd"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_bbnym")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_veat2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_5mfnq")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sv5gc"]
+size = Vector2(8, 8)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_5mfnq"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="Ghost" type="Area2D" unique_id=1467546590 groups=["Ghost"]]
+script = ExtResource("1_veat2")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1409564961]
+sprite_frames = SubResource("SpriteFrames_lv6vd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1419640422]
+shape = SubResource("RectangleShape2D_sv5gc")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=2063327777]
+replication_config = SubResource("SceneReplicationConfig_5mfnq")
+
+[connection signal="area_shape_entered" from="." to="." method="_on_area_shape_entered"]

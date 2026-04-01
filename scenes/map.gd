@@ -17,6 +17,9 @@ var map_data: Array = []
 func get_map_origin():
 	return Vector2(get_used_rect().position * tile_set.tile_size)
 
+func get_map_center():
+	return get_map_origin() + get_map_size() / 2.0
+
 func get_map_size():
 	return Vector2(get_used_rect().size * tile_set.tile_size)
 

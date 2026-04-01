@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dn0a8nh72gupb" path="res://scenes/arena.gd" id="1_e05a3"]
 [ext_resource type="PackedScene" uid="uid://jt7vpdmpbw48" path="res://scenes/map.tscn" id="2_wl4x5"]
+[ext_resource type="LabelSettings" uid="uid://bw7f23l3xceoc" path="res://resources/label_8.tres" id="3_olpmc"]
 
 [node name="Arena" type="Node2D" unique_id=1945760612 groups=["Arena"]]
 script = ExtResource("1_e05a3")
@@ -11,7 +12,31 @@ script = ExtResource("1_e05a3")
 [node name="Replicated" type="Node" parent="." unique_id=217975276]
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=1350542115]
-_spawnable_scenes = PackedStringArray("uid://nrc03kjriwb7", "uid://c223k7rtmfno5")
+_spawnable_scenes = PackedStringArray("uid://nrc03kjriwb7", "uid://c223k7rtmfno5", "uid://b6y2yasupn3v8")
 spawn_path = NodePath("../Replicated")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1835027083]
+
+[node name="GhostTimer" type="Timer" parent="." unique_id=315223487]
+autostart = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=793026886]
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer" unique_id=152495920]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/MarginContainer" unique_id=1037654019]
+layout_mode = 2
+size_flags_vertical = 0
+text = "SCORE: 0"
+label_settings = ExtResource("3_olpmc")
+
+[connection signal="timeout" from="GhostTimer" to="." method="_on_ghost_timer_timeout"]

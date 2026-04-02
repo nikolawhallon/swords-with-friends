@@ -44,34 +44,22 @@ jobs:
         run: godot --headless --verbose --export-release "Linux" "build/linux/$NAME"
 
       - name: Install SSH key
-        shell: bash
         run: |
-          if [ -z "${{ secrets.VACUUMBREWSTUDIOS_SSH_KEY }}" ]; then
-            echo "Error: VACUUMBREWSTUDIOS_SSH_KEY secret is not set or is empty"
-            exit 1
-          fi
           mkdir -p $HOME/.ssh
           echo "${{ secrets.VACUUMBREWSTUDIOS_SSH_KEY }}" > $HOME/.ssh/id_vacuumbrewstudios
           chmod 600 $HOME/.ssh/id_vacuumbrewstudios
-          ssh-keyscan -H "$VACUUMBREWSTUDIOS_HOST" >> $HOME/.ssh/known_hosts
-          chmod 644 $HOME/.ssh/known_hosts
-          echo "SSH key installed successfully"
-          ls -la $HOME/.ssh/
-          echo "Known hosts content:"
-          cat $HOME/.ssh/known_hosts
+          ssh-keyscan -H "$VACUUMBREWSTUDIOS_HOST" >> $HOME/.ssh/known_hosts 2>/dev/null
 
       - name: Upload build
-        shell: bash
         run: |
           rsync -av --delete --whole-file \
-            -e "ssh -i $HOME/.ssh/id_vacuumbrewstudios -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=yes" \
+            -e "ssh -i $HOME/.ssh/id_vacuumbrewstudios -o StrictHostKeyChecking=accept-new" \
             build/linux/ \
             root@$VACUUMBREWSTUDIOS_HOST:~/$NAME/
 
       - name: Restart tmux session
-        shell: bash
         run: |
-          ssh -i $HOME/.ssh/id_vacuumbrewstudios -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=yes root@$VACUUMBREWSTUDIOS_HOST << EOF
+          ssh -i $HOME/.ssh/id_vacuumbrewstudios -o StrictHostKeyChecking=accept-new root@$VACUUMBREWSTUDIOS_HOST << EOF
           tmux kill-session -t "$NAME" 2>/dev/null || true
           tmux new -d -s "$NAME" "cd ~/$NAME && ./$NAME --headless --port=$PORT"
           EOF

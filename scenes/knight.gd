@@ -26,14 +26,14 @@ func _ready():
 	request_sheath.rpc_id(1)
 
 func _physics_process(_delta: float) -> void:
-	if velocity != Vector2.ZERO:
+	if direction != Vector2.ZERO:
 		$AnimatedSprite2D.play("move")
 	else:
 		$AnimatedSprite2D.play("idle")
 
-	if velocity.x < -1.0:
+	if direction.x < 0.0:
 		$AnimatedSprite2D.flip_h = true
-	elif velocity.x > 1.0:
+	elif direction.x > 0.0:
 		$AnimatedSprite2D.flip_h = false
 
 	if multiplayer.get_unique_id() == peer_id:

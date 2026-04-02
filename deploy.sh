@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
+set -e
 
+NAME="swords-with-friends"
 PORT=5001
-SESSION="swords-with-friends"
 HOST="root@165.232.148.15"
 KEY="~/.ssh/id_vacuumbrewstudios"
 
 # 1. export
-godot --headless --export-release Linux build/linux/swords-with-friends
+godot --headless --export-release "Linux" build/linux/$NAME
 
 # 2. sync
-rsync -avz --delete \
+rsync -av --delete --whole-file \
   -e "ssh -i $KEY" \
-  build/linux/ $HOST:~/swords-with-friends/
+  build/linux/ $HOST:~/$NAME/
 
 # 3. restart remote tmux session
 ssh -i $KEY $HOST << EOF
-tmux kill-session -t $SESSION 2>/dev/null || true
-tmux new -d -s $SESSION 'cd ~/swords-with-friends && ./swords-with-friends --headless --port=$PORT'
+tmux kill-session -t $NAME 2>/dev/null || true
+tmux new -d -s $NAME 'cd ~/$NAME && ./$NAME --headless --port=$PORT'
 EOF
 
-echo "Deployed"
+echo "Deployed $NAME on port $PORT"

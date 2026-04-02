@@ -1,0 +1,55 @@
+name: Deploy server
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    container:
+      image: barichello/godot-ci:4.6.2-stable
+
+    env:
+      NAME: ${{ github.event.repository.name }}
+      PORT: 5001
+      VACUUMBREWSTUDIOS_HOST: vacuumbrewstudios.com
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Install deploy tools
+        run: apt-get update && apt-get install -y rsync openssh-client
+
+      - name: Make build directory
+        run: mkdir -p build/linux
+
+      - name: Export Linux build
+        run: godot --headless --export-release "Linux" "build/linux/$NAME"
+
+      - name: Install SSH key
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.VACUUMBREWSTUDIOS_SSH_KEY }}" > ~/.ssh/id_vacuumbrewstudios
+          chmod 600 ~/.ssh/id_vacuumbrewstudios
+          ssh-keyscan -H "$VACUUMBREWSTUDIOS_HOST" >> ~/.ssh/known_hosts
+
+      - name: Upload build
+        shell: bash
+        run: |
+          rsync -av --delete --whole-file \
+            -e "ssh -i ~/.ssh/id_vacuumbrewstudios" \
+            build/linux/ \
+            root@$VACUUMBREWSTUDIOS_HOST:~/$NAME/
+
+      - name: Restart tmux session
+        shell: bash
+        run: |
+          ssh -i ~/.ssh/id_vacuumbrewstudios root@$VACUUMBREWSTUDIOS_HOST << EOF
+          tmux kill-session -t "$NAME" 2>/dev/null || true
+          tmux new -d -s "$NAME" "cd ~/$NAME && ./$NAME --headless --port=$PORT"
+          EOF

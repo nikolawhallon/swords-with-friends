@@ -46,10 +46,16 @@ jobs:
       - name: Install SSH key
         shell: bash
         run: |
+          if [ -z "${{ secrets.VACUUMBREWSTUDIOS_SSH_KEY }}" ]; then
+            echo "Error: VACUUMBREWSTUDIOS_SSH_KEY secret is not set or is empty"
+            exit 1
+          fi
           mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.VACUUMBREWSTUDIOS_SSH_KEY }}" > ~/.ssh/id_vacuumbrewstudios
+          echo "${{ secrets.VACUUMBREWSTUDIOS_SSH_KEY }}" > ~/.ssh/id_vacuumbrewstudios
           chmod 600 ~/.ssh/id_vacuumbrewstudios
           ssh-keyscan -H "$VACUUMBREWSTUDIOS_HOST" >> ~/.ssh/known_hosts
+          echo "SSH key installed successfully"
+          ls -la ~/.ssh/
 
       - name: Upload build
         shell: bash

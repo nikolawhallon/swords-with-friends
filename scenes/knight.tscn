@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://b5pplpf63ns2u" path="res://assets/knight/knight-idle-2.png" id="2_5fsgc"]
 [ext_resource type="Texture2D" uid="uid://bnwxe38ecmilq" path="res://assets/knight/knight-move-1.png" id="3_swm0g"]
 [ext_resource type="Texture2D" uid="uid://bcyfapbqex538" path="res://assets/knight/knight-move-2.png" id="4_k2txo"]
+[ext_resource type="PackedScene" uid="uid://crfcwsne50c0c" path="res://scenes/helpers/match_visibility.tscn" id="6_swm0g"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_mvyd6"]
 animations = [{
@@ -60,3 +61,5 @@ shape = SubResource("RectangleShape2D_14u3r")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=149977796]
 replication_config = SubResource("SceneReplicationConfig_5fsgc")
+
+[node name="MatchVisibility" parent="." unique_id=459758655 instance=ExtResource("6_swm0g")]

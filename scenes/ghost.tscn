@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://cnd84jud5iie3" path="res://scenes/ghost.gd" id="1_veat2"]
 [ext_resource type="Texture2D" uid="uid://bpc1bx3u77vlj" path="res://assets/ghost/ghost-2.png" id="2_veat2"]
 [ext_resource type="Texture2D" uid="uid://c8br0rbtd6wjq" path="res://assets/ghost/ghost-3.png" id="3_5mfnq"]
+[ext_resource type="PackedScene" uid="uid://crfcwsne50c0c" path="res://scenes/helpers/match_visibility.tscn" id="5_5mfnq"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_lv6vd"]
 animations = [{
@@ -41,5 +42,7 @@ shape = SubResource("RectangleShape2D_sv5gc")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=2063327777]
 replication_config = SubResource("SceneReplicationConfig_5mfnq")
+
+[node name="MatchVisibility" parent="." unique_id=459758655 instance=ExtResource("5_5mfnq")]
 
 [connection signal="area_shape_entered" from="." to="." method="_on_area_shape_entered"]

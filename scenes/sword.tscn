@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://chu41sdkj1yla" path="res://assets/sword-horizontal.png" id="1_n355p"]
 [ext_resource type="Texture2D" uid="uid://s41p5coui75o" path="res://assets/sword-vertical.png" id="2_s4ec8"]
+[ext_resource type="PackedScene" uid="uid://crfcwsne50c0c" path="res://scenes/helpers/match_visibility.tscn" id="3_s4ec8"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_k5whp"]
 animations = [{
@@ -44,3 +45,5 @@ shape = SubResource("RectangleShape2D_1yp6w")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1354226824]
 replication_config = SubResource("SceneReplicationConfig_n355p")
+
+[node name="MatchVisibility" parent="." unique_id=459758655 instance=ExtResource("3_s4ec8")]

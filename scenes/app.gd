@@ -59,7 +59,12 @@ func _ready():
 	print(DisplayServer.get_name())
 
 	if DisplayServer.get_name() == "headless":
-		if host_game(8000):
+		var port = 8000
+		for arg in OS.get_cmdline_args():
+			if arg.begins_with("--port="):
+				port = int(arg.split("=")[1])
+
+		if host_game(port):
 			state = State.WAITING
 
 	if OS.get_name() == "Web":
@@ -228,13 +233,13 @@ func connect_game(ip, port):
 
 func queue_game():
 	var peer = WebSocketMultiplayerPeer.new()
-	var result = peer.create_client("wss://data-wars.deepgram.com")
+	var result = peer.create_client("wss://swordswithfriends.vacuumbrewstudios.com")
 	if result != OK:
 		print("Failed to connect: ", result)
 		return false
 
 	multiplayer.multiplayer_peer = peer
-	print("Connected to: wss://data-wars.deepgram.com")
+	print("Connected to: wss://swordswithfriends.vacuumbrewstudios.com")
 
 	return true
 

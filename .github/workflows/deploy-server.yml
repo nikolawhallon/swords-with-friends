@@ -50,25 +50,25 @@ jobs:
             echo "Error: VACUUMBREWSTUDIOS_SSH_KEY secret is not set or is empty"
             exit 1
           fi
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VACUUMBREWSTUDIOS_SSH_KEY }}" > ~/.ssh/id_vacuumbrewstudios
-          chmod 600 ~/.ssh/id_vacuumbrewstudios
-          ssh-keyscan -H "$VACUUMBREWSTUDIOS_HOST" >> ~/.ssh/known_hosts
+          mkdir -p $HOME/.ssh
+          echo "${{ secrets.VACUUMBREWSTUDIOS_SSH_KEY }}" > $HOME/.ssh/id_vacuumbrewstudios
+          chmod 600 $HOME/.ssh/id_vacuumbrewstudios
+          ssh-keyscan -H "$VACUUMBREWSTUDIOS_HOST" >> $HOME/.ssh/known_hosts
           echo "SSH key installed successfully"
-          ls -la ~/.ssh/
+          ls -la $HOME/.ssh/
 
       - name: Upload build
         shell: bash
         run: |
           rsync -av --delete --whole-file \
-            -e "ssh -i ~/.ssh/id_vacuumbrewstudios" \
+            -e "ssh -i $HOME/.ssh/id_vacuumbrewstudios" \
             build/linux/ \
             root@$VACUUMBREWSTUDIOS_HOST:~/$NAME/
 
       - name: Restart tmux session
         shell: bash
         run: |
-          ssh -i ~/.ssh/id_vacuumbrewstudios root@$VACUUMBREWSTUDIOS_HOST << EOF
+          ssh -i $HOME/.ssh/id_vacuumbrewstudios root@$VACUUMBREWSTUDIOS_HOST << EOF
           tmux kill-session -t "$NAME" 2>/dev/null || true
           tmux new -d -s "$NAME" "cd ~/$NAME && ./$NAME --headless --port=$PORT"
           EOF

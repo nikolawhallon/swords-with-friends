@@ -1,4 +1,4 @@
-name: Deploy server
+name: Deploy server to vacuumbrewstudios.com
 
 on:
   push:

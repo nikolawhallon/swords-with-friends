@@ -26,6 +26,8 @@ func _process(_delta: float) -> void:
 	if len(knights) > 0:
 		var knight_center = Vector2.ZERO
 		for knight in knights:
+			if knight.peer_id != multiplayer.get_unique_id():
+				continue
 			knight_center.x += knight.global_position.x
 			knight_center.y += knight.global_position.y
 		knight_center = knight_center / len(knights)

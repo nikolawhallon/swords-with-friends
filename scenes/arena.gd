@@ -52,6 +52,14 @@ func _input(event):
 
 		request_spawn_knight.rpc_id(1, event.device)
 
+	if event is InputEventKey and event.is_pressed():
+		if event.keycode == KEY_SPACE or event.keycode == KEY_UP or event.keycode == KEY_DOWN or event.keycode == KEY_LEFT or event.keycode == KEY_RIGHT:
+			for knight in NodeUtils.get_nodes_in_group_for_node(self, "Knight"):
+				if knight.device_id == -1:
+					return
+
+			request_spawn_knight.rpc_id(1, -1)
+
 @rpc("call_local", "reliable")
 func announce_start_game(random_seed, _peers):
 	state = State.STARTING

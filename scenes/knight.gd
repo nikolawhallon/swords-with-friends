@@ -38,11 +38,17 @@ func _physics_process(_delta: float) -> void:
 
 	if multiplayer.get_unique_id() == peer_id:
 		var new_direction = calculate_new_direction()
-	
+
 		if new_direction != direction:
 			request_update_direction.rpc_id(1, new_direction)
 
-		if Input.is_joy_button_pressed(device_id, JOY_BUTTON_A) or Input.is_joy_button_pressed(device_id, JOY_BUTTON_B) or Input.is_joy_button_pressed(device_id, JOY_BUTTON_X) or Input.is_joy_button_pressed(device_id, JOY_BUTTON_Y):
+		var unsheath = false
+		if device_id == -1:
+			unsheath = Input.is_key_pressed(KEY_SPACE)
+		else:
+			unsheath = Input.is_joy_button_pressed(device_id, JOY_BUTTON_A) or Input.is_joy_button_pressed(device_id, JOY_BUTTON_B) or Input.is_joy_button_pressed(device_id, JOY_BUTTON_X) or Input.is_joy_button_pressed(device_id, JOY_BUTTON_Y)
+
+		if unsheath:
 			request_unsheath.rpc_id(1)
 		else:
 			request_sheath.rpc_id(1)
@@ -54,6 +60,17 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 
 func calculate_new_direction():
+	if device_id == -1:
+		var keyboard_input = Vector2(
+			int(Input.is_key_pressed(KEY_RIGHT)) - int(Input.is_key_pressed(KEY_LEFT)),
+			int(Input.is_key_pressed(KEY_DOWN)) - int(Input.is_key_pressed(KEY_UP))
+		)
+
+		if keyboard_input != Vector2.ZERO:
+			return keyboard_input.normalized()
+
+		return Vector2.ZERO
+
 	var stick = Vector2(
 		Input.get_joy_axis(device_id, JOY_AXIS_LEFT_X),
 		Input.get_joy_axis(device_id, JOY_AXIS_LEFT_Y)

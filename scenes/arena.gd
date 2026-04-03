@@ -23,6 +23,7 @@ func _process(_delta: float) -> void:
 		emit_signal("leave_requested")
 
 	var knights = NodeUtils.get_nodes_in_group_for_node(self, "Knight")
+	var denominator = 0
 	if len(knights) > 0:
 		var knight_center = Vector2.ZERO
 		for knight in knights:
@@ -30,7 +31,8 @@ func _process(_delta: float) -> void:
 				continue
 			knight_center.x += knight.global_position.x
 			knight_center.y += knight.global_position.y
-		knight_center = knight_center / len(knights)
+			denominator += 1
+		knight_center = knight_center / denominator
 		$Camera2D.global_position = knight_center
 
 	$Camera2D.limit_left   = int($Map.get_map_origin().x)

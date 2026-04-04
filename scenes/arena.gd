@@ -24,14 +24,14 @@ func _process(_delta: float) -> void:
 
 	var knights = NodeUtils.get_nodes_in_group_for_node(self, "Knight")
 	var denominator = 0
-	if len(knights) > 0:
-		var knight_center = Vector2.ZERO
-		for knight in knights:
-			if knight.peer_id != multiplayer.get_unique_id():
-				continue
-			knight_center.x += knight.global_position.x
-			knight_center.y += knight.global_position.y
-			denominator += 1
+	var knight_center = Vector2.ZERO
+	for knight in knights:
+		if knight.peer_id != multiplayer.get_unique_id():
+			continue
+		knight_center.x += knight.global_position.x
+		knight_center.y += knight.global_position.y
+		denominator += 1
+	if denominator > 0:
 		knight_center = knight_center / denominator
 		$Camera2D.global_position = knight_center
 
@@ -51,7 +51,7 @@ func _process(_delta: float) -> void:
 func _input(event):
 	if event is InputEventJoypadButton:
 		for knight in NodeUtils.get_nodes_in_group_for_node(self, "Knight"):
-			if knight.device_id == event.device:
+			if knight.device_id == event.device and knight.peer_id == multiplayer.get_unique_id():
 				return
 
 		request_spawn_knight.rpc_id(1, event.device)
@@ -59,7 +59,7 @@ func _input(event):
 	if event is InputEventKey and event.is_pressed():
 		if event.keycode == KEY_SPACE or event.keycode == KEY_UP or event.keycode == KEY_DOWN or event.keycode == KEY_LEFT or event.keycode == KEY_RIGHT:
 			for knight in NodeUtils.get_nodes_in_group_for_node(self, "Knight"):
-				if knight.device_id == -1:
+				if knight.device_id == -1 and knight.peer_id == multiplayer.get_unique_id():
 					return
 
 			request_spawn_knight.rpc_id(1, -1)

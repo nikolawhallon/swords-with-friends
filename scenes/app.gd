@@ -124,7 +124,7 @@ func _process(_delta: float) -> void:
 			"seed": random_seed,
 		}
 
-		announce_boot_arena.rpc_id(1, match_id)
+		announce_boot_arena(match_id)
 
 func _on_peer_connected(peer_id: int) -> void:
 	print("Peer connected: ", peer_id)
@@ -244,6 +244,7 @@ func queue_game():
 	return true
 
 func try_match_making():
+	assert(multiplayer.is_server())
 	while waiting_peer_ids.size() >= MAX_TEAMS:
 		var peers = []
 		for i in MAX_TEAMS:
@@ -264,19 +265,19 @@ func try_match_making():
 			"seed": random_seed,
 		}
 
-		if DisplayServer.get_name() == "headless":
-			announce_boot_arena.rpc_id(1, match_id)
-
-		# Collect unique peer_ids to avoid duplicate RPCs
 		var peer_ids = []
 		for peer in peers:
 			if not peer_ids.has(peer["peer_id"]):
 				peer_ids.append(peer["peer_id"])
 
 		for id in peer_ids:
+			if id == 1:
+				continue
 			announce_boot_arena.rpc_id(id, match_id)
 
-@rpc("call_local", "reliable")
+		announce_boot_arena(match_id)
+
+@rpc("any_peer", "reliable")
 func announce_boot_arena(match_id):
 	$LobbyUI/InfoMarginContainer/Label.text = ""
 	$LobbyUI.visible = false
@@ -302,6 +303,7 @@ func request_mark_match_ready(match_id):
 	mark_match_ready_for_peer(multiplayer.get_remote_sender_id(), match_id)
 
 func mark_match_ready_for_peer(peer_id, match_id):
+	assert(multiplayer.is_server())
 	if not matches.has(match_id):
 		print("WARN - matches does not have this match_id: ", match_id)
 		return
@@ -322,17 +324,17 @@ func mark_match_ready_for_peer(peer_id, match_id):
 
 	var arena = get_arena_by_match_id(match_id)
 
-	# Collect unique peer_ids to avoid duplicate RPCs
 	var peer_ids = []
 	for peer in peers:
 		if not peer_ids.has(peer["peer_id"]):
 			peer_ids.append(peer["peer_id"])
 
-	if DisplayServer.get_name() == "headless":
-		arena.announce_start_game.rpc_id(1, random_seed, peers)
-
 	for id in peer_ids:
+		if id == 1:
+			continue
 		arena.announce_start_game.rpc_id(id, random_seed, peers)
+
+	arena.announce_start_game(random_seed, peers)
 
 func _on_arena_leave_requested(arena):
 	if multiplayer.is_server():
@@ -348,6 +350,7 @@ func request_leave_match(match_id):
 	leave_match_for_peer(match_id)
 
 func leave_match_for_peer(match_id):
+	assert(multiplayer.is_server())
 	var arena = get_arena_by_match_id(match_id)
 	if arena == null:
 		print("ERROR - arena does not exist for match_id: ", match_id)
@@ -355,13 +358,14 @@ func leave_match_for_peer(match_id):
 
 	var peer_ids = get_peer_ids_for_match(match_id)
 
-	if DisplayServer.get_name() == "headless":
-		announce_leave_match.rpc_id(1, match_id)
-
 	for id in peer_ids:
+		if id == 1:
+			continue
 		announce_leave_match.rpc_id(id, match_id)
 
-@rpc("call_local", "reliable")
+	announce_leave_match(match_id)
+
+@rpc("any_peer", "reliable")
 func announce_leave_match(match_id):
 	$LobbyUI.visible = true
 

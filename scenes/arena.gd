@@ -64,7 +64,7 @@ func _input(event):
 
 			request_spawn_knight.rpc_id(1, -1)
 
-@rpc("call_local", "reliable")
+@rpc("any_peer", "reliable")
 func announce_start_game(random_seed, _peers):
 	state = State.STARTING
 	$Map.init(random_seed)
@@ -97,7 +97,11 @@ func _on_ghost_killed():
 
 	score += 1
 	for peer in NodeUtils.get_first_ancestor_in_group_for_node(self, "App").get_peer_ids_for_match(match_id):
+		if peer == 1:
+			continue
 		announce_update_score.rpc_id(peer, score)
+
+	announce_update_score(score)
 
 func get_random_position_in_map() -> Vector2:
 	var size = $Map.get_map_size()
@@ -137,7 +141,7 @@ func get_random_position_around_map() -> Vector2:
 
 	return origin
 
-@rpc("authority", "call_local", "reliable")
+@rpc("authority", "reliable")
 func announce_update_score(new_score: int) -> void:
 	score = new_score
 	$CanvasLayer/MarginContainer/ScoreLabel.text = "SCORE: %d" % score
